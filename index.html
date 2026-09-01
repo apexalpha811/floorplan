@@ -53,12 +53,17 @@ body{
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
 }
-/* Page ground taken from v1: true black under two soft forest washes. */
+/* Page ground taken from v1: true black under two soft forest washes.
+   Radii are in vmax, not vw. Sized in vw the ellipses collapse on a narrow
+   screen (70vw is 262px on a 375px phone against an 812px-tall viewport), so
+   the wash fell to ~0.17 alpha and read as flat black. vmax keeps them sized
+   off the long edge, which leaves desktop pixel-identical because vw == vmax
+   in landscape. */
 body::before{
   content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
   background:
-    radial-gradient(70vw 60vw at 78% -12%, rgba(46,66,55,0.55), transparent 62%),
-    radial-gradient(60vw 55vw at -12% 108%, rgba(22,36,28,0.85), transparent 60%),
+    radial-gradient(70vmax 60vmax at 78% -12%, rgba(46,66,55,0.55), transparent 62%),
+    radial-gradient(60vmax 55vmax at -12% 108%, rgba(22,36,28,0.85), transparent 60%),
     var(--ground);
 }
 /* Plaster texture. Flat black reads cheap. */
