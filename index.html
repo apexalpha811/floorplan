@@ -510,9 +510,9 @@ footer{
         circulation, and the circuit ends back in the lounge.</li>
         <li><b>Arrival reaches the clinic without crossing the club.</b> The clinical corridor runs
         directly east off arrival and serves all three treatment rooms.</li>
-        <li><b>Treatment rooms, IV lounge and consult rooms form one suite.</b> One clinical staff pool
-        covers all three, so the consult rooms are drawn opening off the IV lounge rather than off a
-        separate corridor.</li>
+        <li><b>Treatment rooms, consult rooms and the IV lounge form one suite.</b> One clinical staff
+        pool covers all three, and all six open directly onto the clinical corridor. Nobody crosses an
+        occupied room to reach another, so a consult patient never walks through the infusion lounge.</li>
         <li><b>Biohazard and linen on the service side.</b> Drawn as an alcove off the MEP room, on
         back-of-house circulation and away from members.</li>
         <li><b>MEP adjacent to the wet block riser.</b> Shortest possible exhaust and hot-water runs.</li>
@@ -610,23 +610,26 @@ var TREE = { rows: [
     L('locker',   550, 'wet',  ['Locker, shower, changing', 'and bathrooms'], true)
   ]},
 
-  /* D. South band, 1,544 SF. The clinical corridor is a row above the
-        treatment rooms so every one of them fronts onto it. */
+  /* D. South band, 1,544 SF. The clinical corridor spans the whole clinic
+        block as a row, with all five enclosed clinical rooms hung beneath it
+        and the IV lounge against its east end. Every clinical room therefore
+        fronts the corridor directly. The previous arrangement put the consult
+        rooms two columns out, which left the IV lounge as their only way in:
+        patients walked past members mid-infusion. Consults sit nearest arrival
+        because a patient consults before they treat. */
   { cols: [
     L('arrival', 350, 'arrival', ['Arrival, concierge', 'and retail'], true),
     { rows: [
       L('corrS', 269, 'circ', ['CLINICAL ACCESS CORRIDOR']),
       { cols: [
+        L('consult1', 125, 'clinic', ['CONSULT', 'ROOM 1']),
+        L('consult2', 125, 'clinic', ['CONSULT', 'ROOM 2']),
         L('tr1', 100, 'clinic', ['TREATMENT', 'ROOM 1']),
         L('tr2', 100, 'clinic', ['TREATMENT', 'ROOM 2']),
         L('tr3', 100, 'clinic', ['TREATMENT', 'ROOM 3'])
       ]}
     ]},
-    L('iv', 375, 'clinic', ['IV and regenerative', 'lounge, 8 chairs'], true),
-    { rows: [
-      L('consult1', 125, 'clinic', ['CONSULT', 'ROOM 1']),
-      L('consult2', 125, 'clinic', ['CONSULT', 'ROOM 2'])
-    ]}
+    L('iv', 375, 'clinic', ['IV and regenerative', 'lounge, 8 chairs'], true)
   ]}
 ]};
 
@@ -861,14 +864,15 @@ function px(v){ return v * PPF; }
     chair(c, 1.2, 10.5); chair(c, 1.2, 13.2);
   })();
 
-  /* Treatment rooms, 10.8 x 9.3 each. The table is turned across the room
-     so the corridor door is not blocked. */
+  /* Treatment rooms, 8.49 x 11.78 each. Narrower and deeper than before, so
+     the table runs on the long axis with working room both sides, and the
+     north third stays clear for the corridor door. */
   ['tr1', 'tr2', 'tr3'].forEach(function(id){
-    var c = room(id), w = c.w;
-    B(c, 2.2, 4.2, 6.2, 3.2, POR, 0.5);         /* treatment table */
-    counter(c, 0.6, 7.9, w - 1.2, 1.1);         /* casework */
-    C(c, 1.8, 8.45, 0.45, MET);                 /* sink */
-    C(c, 9.2, 5.4, 0.75, UPH);                  /* stool */
+    var c = room(id);
+    B(c, 2.6, 4.0, 3.2, 6.4, POR, 0.5);         /* treatment table */
+    counter(c, 0.6, 10.6, 7.3, 1.1);            /* casework, south wall */
+    C(c, 1.8, 11.15, 0.45, MET);                /* sink */
+    C(c, 7.0, 6.0, 0.75, UPH);                  /* stool */
   });
 
   /* IV and regenerative lounge, 21.4 x 17.5, eight chairs in two rows with
@@ -878,13 +882,16 @@ function px(v){ return v * PPF; }
     for (i = 0; i < 4; i++) recliner(c, 3.2 + i * 4.15, h - 5.9, i < 3);
   })();
 
-  /* Consult rooms, 14.2 x 8.8 each */
+  /* Consult rooms, 10.61 x 11.78 each. The door moved from the west wall to
+     the north, so the exam table sits east of the opening and the desk and
+     visitor chairs take the west side. */
   ['consult1', 'consult2'].forEach(function(id){
-    var c = room(id), w = c.w, h = c.h;
-    B(c, 4.0, 1.2, 5.8, 2.8, POR, 0.4);                   /* exam table */
-    counter(c, w - 4.2, 0.9, 3.2, 1.8); C(c, w - 2.6, 1.8, 0.45, MET);
-    counter(c, w - 4.2, h - 3.0, 3.2, 1.8);
-    chair(c, 4.4, 5.6); chair(c, 6.9, 5.6);
+    var c = room(id);
+    B(c, 7.2, 1.2, 2.8, 5.8, POR, 0.4);         /* exam table */
+    counter(c, 0.7, 4.2, 3.0, 1.8);             /* desk */
+    chair(c, 0.9, 6.6); chair(c, 3.2, 6.6);     /* patient and companion */
+    counter(c, 7.0, 8.4, 3.0, 1.6);             /* sink run */
+    C(c, 8.5, 9.2, 0.45, MET);
   });
 })();
 
@@ -904,9 +911,9 @@ var DOORS = [
   ['locker','N',0.75,6.0],
   ['lounge','S',0.82,6.0], ['lounge','N',0.3,3.5],
   ['arrival','E',0.28,6.0], ['arrival','N',0.5,8.0],
+  ['consult1','N',0.5,3.0], ['consult2','N',0.5,3.0],
   ['tr1','N',0.5,3.0], ['tr2','N',0.5,3.0], ['tr3','N',0.5,3.0],
-  ['iv','W',0.24,4.0],
-  ['consult1','W',0.5,3.0], ['consult2','W',0.5,3.0]
+  ['iv','W',0.16,4.0]
 ];
 
 function doorGeom(d){
@@ -1197,8 +1204,8 @@ function doorGeom(d){
    ['corrS','tr2','treatment 2 fronts the clinical corridor'],
    ['corrS','tr3','treatment 3 fronts the clinical corridor'],
    ['corrS','iv','IV lounge fronts the clinical corridor'],
-   ['iv','consult1','consult 1 opens off the IV suite'],
-   ['iv','consult2','consult 2 opens off the IV suite'],
+   ['corrS','consult1','consult 1 fronts the clinical corridor'],
+   ['corrS','consult2','consult 2 fronts the clinical corridor'],
    ['mep','bio','biohazard alcove off MEP']];
   ADJ.forEach(function(p){
     if (!shareEdge(BY[p[0]], BY[p[1]])) bad.push('Adjacency claimed but not drawn: ' + p[2]);
@@ -1207,7 +1214,7 @@ function doorGeom(d){
   /* 8. Every room reaches circulation. Two documented exceptions: the
         biohazard alcove opens off MEP, and the consult rooms open off the
         IV lounge because they are one clinical suite with one staff pool. */
-  var EXEMPT = {bio:'mep', consult1:'iv', consult2:'iv'};
+  var EXEMPT = {bio:'mep'};
   var FRONT = {circ:1, arrival:1};
   ROOMS.forEach(function(r){
     if (FRONT[r.zone]) return;
